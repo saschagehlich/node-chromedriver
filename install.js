@@ -1,5 +1,12 @@
 'use strict'
 
+// Hack for Ubuntu on Windows: interface enumeration fails with EINVAL, so return empty.
+try {
+  require('os').networkInterfaces();
+} catch (e) {
+  require('os').networkInterfaces = () => ({});
+}
+
 var AdmZip = require('adm-zip')
 var cp = require('child_process')
 var fs = require('fs')
@@ -13,13 +20,6 @@ var path = require('path')
 var rimraf = require('rimraf').sync
 var url = require('url')
 var util = require('util')
-
-// Hack for Ubuntu on Windows: interface enumeration fails with EINVAL, so return empty.
-try {
-  require('os').networkInterfaces();
-} catch (e) {
-  require('os').networkInterfaces = () => ({});
-}
 
 var libPath = path.join(__dirname, 'lib', 'chromedriver')
 var cdnUrl = process.env.npm_config_chromedriver_cdnurl || process.env.CHROMEDRIVER_CDNURL || 'http://chromedriver.storage.googleapis.com'
